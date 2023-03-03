@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var titles = [Titles]()
+    @State private var showingAlert = false
     var body: some View {
         NavigationView {
             List(titles) { heading in
@@ -30,6 +31,9 @@ struct ContentView: View {
         .task {
             await getTitles()
         }
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text("Loading Error"), message: Text("There was a problem loading the list of games"), dismissButton: .default(Text("OK")))
+        }
     }
     func getTitles() async {
             let query = "https://www.cheapshark.com/api/1.0/deals?storeID=1"
@@ -37,9 +41,11 @@ struct ContentView: View {
                 if let (data, _) = try? await URLSession.shared.data(from: url) {
                     if let decodedResponse = try? JSONDecoder().decode([Titles].self, from: data) {
                         titles = decodedResponse
+                        return
                     }
                 }
             }
+        showingAlert = true
         }
 }
 
