@@ -14,8 +14,13 @@ struct ContentView: View {
             List(titles) { heading in
                 NavigationLink {
                     VStack {
-                        Text(heading.titles)
+                        Text(heading.titles).fontWeight(.bold).font(.largeTitle)
+                        Text("Normal Price: $\(heading.normalPrice)").padding()
+                        Text("Current Sale Price: $\(heading.salePrice)").padding()
+                        Text("Rated \(heading.metacriticScore)/100 by Metacritic").padding()
+                        Link("Link to Steam Page", destination: URL(string: "http://store.steampowered.com/app/\(heading.steamAppID)/")!).padding()
                     }
+                    Spacer()
                 } label: {
                     Text(heading.titles)
                 }
@@ -47,10 +52,16 @@ struct ContentView_Previews: PreviewProvider {
 struct Titles: Identifiable, Codable {
     var id = UUID()
     var titles: String
-    
+    var steamAppID: String
+    var normalPrice: String
+    var salePrice: String
+    var metacriticScore: String
     
     enum CodingKeys: String, CodingKey {
         case titles = "title"
-        
+        case steamAppID = "steamAppID"
+        case normalPrice = "normalPrice"
+        case salePrice = "salePrice"
+        case metacriticScore = "metacriticScore"
     }
 }
